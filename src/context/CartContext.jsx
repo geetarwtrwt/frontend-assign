@@ -1,7 +1,7 @@
 // src/context/CartContext.jsx
-'use client';
+"use client";
 
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect } from "react";
 
 export const CartContext = createContext();
 
@@ -9,12 +9,12 @@ export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
-    const storedCart = localStorage.getItem('cartItems');
+    const storedCart = localStorage.getItem("cartItems");
     if (storedCart) setCartItems(JSON.parse(storedCart));
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
 
   const addToCart = (product, selectedColor, selectedSize) => {
@@ -23,12 +23,15 @@ export const CartProvider = ({ children }) => {
         (item) =>
           item.productId === product.id &&
           item.color === selectedColor &&
-          item.size === selectedSize,
+          item.size === selectedSize
       );
 
       if (existingItemIndex >= 0) {
         const updatedItems = [...prevItems];
-        updatedItems[existingItemIndex].quantity += 1;
+        updatedItems[existingItemIndex] = {
+          ...updatedItems[existingItemIndex],
+          quantity: (updatedItems[existingItemIndex].quantity || 0) + 1,
+        };
         return updatedItems;
       }
 
