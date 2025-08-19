@@ -1,34 +1,50 @@
-'use client';
+"use client";
 
-import { useState, useContext, useEffect } from 'react';
-import ProductDetails from '@/components/ProductDetails';
-import RecentlyViewed from '@/components/RecentlyViewed';
-import { CartContext } from '@/context/CartContext';
+import { useState, useContext, useEffect } from "react";
+import ProductDetails from "@/components/ProductDetails";
+import RecentlyViewed from "@/components/RecentlyViewed";
+import { CartContext } from "@/context/CartContext";
 
 export default function ProductDetailsWrapper({ product }) {
   const { addToCart } = useContext(CartContext);
 
-  // BUG 1: No default color selected
-  const [selectedColor, setSelectedColor] = useState('');
-  const [selectedSize, setSelectedSize] = useState('');
+  const [selectedColor, setSelectedColor] = useState(
+    product.variants[0]?.color
+  );
+  const [selectedSize, setSelectedSize] = useState(
+    product.variants[0].sizes[0]
+  );
 
-  // BUG 2: Always shows first variant's sizes regardless of selected color
-  const availableSizesForColor = product.variants[0]?.sizes || [];
+  const availableSizesForColor =
+    product.variants.find((e) => e.color === selectedColor)?.sizes || [];
 
-  // BUG 6: Empty dependency array - won't reset when color changes
   useEffect(() => {
-    setSelectedSize('');
-  }, []);
+    setSelectedSize("");
+  }, [selectedColor]);
 
-  // BUG 5: Only checks size, not color
   const handleAddToCart = () => {
-    if (!selectedSize) {
-      alert('Please select a size.');
+    if (!selectedSize || !selectedColor) {
+      alert("Please select both color and size.");
       return;
     }
     addToCart(product, selectedColor, selectedSize);
   };
 
+  useEffect(() => {
+    if (product) {
+      let viewed = JSON.parse(localStorage.getItem("recentViewdProduct")) || [];
+
+      viewed = viewed.filter((e) => e.id !== product.id);
+      viewed.unshift({
+        id: product.id,
+        name: product.name,
+        imageUrl: product.imageUrl,
+        price: product.price,
+      });
+      viewed = viewed.slice(0, 3);
+      localStorage.setItem("recentViewdProduct", JSON.stringify(viewed));
+    }
+  }, [product]);
   return (
     <>
       <ProductDetails

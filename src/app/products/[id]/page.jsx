@@ -1,9 +1,9 @@
-import { fetchProductById } from '@/data/products';
-import { notFound } from 'next/navigation';
-import ProductDetailsWrapper from './ProductDetailsWrapper';
+import { fetchProductById } from "@/data/products";
+import { notFound } from "next/navigation";
+import ProductDetailsWrapper from "./ProductDetailsWrapper";
 
 export default async function ProductPage({ params }) {
-  const { id } = params;
+  const { id } = await params;
   const product = await fetchProductById(id);
 
   if (!product) {

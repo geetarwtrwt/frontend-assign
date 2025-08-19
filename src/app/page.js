@@ -1,5 +1,6 @@
 import { products } from "@/data/products";
 import ProductCard from "../components/ProductCard";
+import RecentlyViewed from "@/components/RecentlyViewed";
 
 function MyApp() {
   return (
@@ -13,6 +14,7 @@ function MyApp() {
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
+        <RecentlyViewed />
       </main>
     </div>
   );
